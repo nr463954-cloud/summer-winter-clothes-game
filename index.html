@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة ملابس الصيف والشتاء - م/ ندا رمضان</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF8C42;
+    --orange-dark: #E06D22;
+    --yellow: #FFBE0B;
+    --yellow-light: #FFF8D6;
+    --blue: #3A86FF;
+    --blue-dark: #1D4ED8;
+    --blue-light: #EFF6FF;
+    --bg-cream: #FFFDF7;
+    --text-dark: #1E293B;
+    --success: #10B981;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-cream);
+    background-image: radial-gradient(var(--yellow) 1.5px, transparent 1.5px), radial-gradient(var(--blue) 1.5px, var(--bg-cream) 1.5px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    color: var(--text-dark);
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: 1050px;
+    background: #FFFFFF;
+    border-radius: 32px;
+    border: 6px solid var(--blue);
+    box-shadow: 0 18px 40px rgba(58, 134, 255, 0.18);
+    overflow: hidden;
+  }
+
+  /* الشريط العلوي */
+  .top-bar {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: white;
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .badge-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 20px;
+    border-radius: 50px;
+  }
+
+  .stars-box {
+    background: var(--yellow);
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    font-weight: 900;
+    padding: 6px 22px;
+    border-radius: 50px;
+    box-shadow: 0 4px 0 #D99B00;
+  }
+
+  /* الشاشات */
+  .screen {
+    display: none;
+    padding: 30px 25px;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .screen.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* شاشة البداية */
+  .hero-icons {
+    font-size: 4.5rem;
+    margin-bottom: 10px;
+  }
+
+  .main-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--blue-dark);
+    margin-bottom: 8px;
+  }
+
+  .sub-title {
+    font-size: 1.4rem;
+    color: #475569;
+    margin-bottom: 22px;
+    font-weight: 700;
+  }
+
+  .designer-tag {
+    display: inline-block;
+    background: var(--yellow-light);
+    border: 3px solid var(--yellow);
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    font-weight: 800;
+    padding: 10px 28px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .designer-tag span {
+    color: var(--orange-dark);
+    font-weight: 900;
+  }
+
+  .btn-start {
+    background: linear-gradient(180deg, var(--orange), var(--orange-dark));
+    color: white;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: 900;
+    padding: 16px 50px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #B85214;
+    transition: transform 0.15s;
+  }
+
+  .btn-start:active {
+    transform: translateY(5px);
+    box-shadow: 0 3px 0 #B85214;
+  }
+
+  /* شاشة اللعب */
+  .instruction-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .instruction-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: #F1F5F9;
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: 3px solid #E2E8F0;
+  }
+
+  .btn-sound {
+    background: var(--blue);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding: 10px 22px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--blue-dark);
+  }
+
+  .btn-sound:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--blue-dark);
+  }
+
+  /* منطقة الفصول (مناطق الإفلات) */
+  .seasons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 700px) {
+    .seasons-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .drop-zone {
+    border-radius: 28px;
+    padding: 18px;
+    min-height: 270px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  /* صندوق فصل الصيف */
+  .summer-zone {
+    background: var(--yellow-light);
+    border: 5px dashed var(--orange);
+  }
+
+  .summer-zone.drag-over {
+    background: #FDE68A;
+    transform: scale(1.02);
+    border-style: solid;
+  }
+
+  /* صندوق فصل الشتاء */
+  .winter-zone {
+    background: var(--blue-light);
+    border: 5px dashed var(--blue);
+  }
+
+  .winter-zone.drag-over {
+    background: #DBEAFE;
+    transform: scale(1.02);
+    border-style: solid;
+  }
+
+  .season-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    padding: 8px 25px;
+    border-radius: 50px;
+    margin-bottom: 15px;
+    color: white;
+  }
+
+  .summer-zone .season-header {
+    background: var(--orange);
+    box-shadow: 0 5px 0 var(--orange-dark);
+  }
+
+  .winter-zone .season-header {
+    background: var(--blue);
+    box-shadow: 0 5px 0 var(--blue-dark);
+  }
+
+  .dropped-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 150px;
+    align-items: center;
+  }
+
+  /* البطاقات القابلة للسحب */
+  .clothes-pool {
+    background: #F8FAFC;
+    border: 4px solid #E2E8F0;
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    min-height: 175px;
+  }
+
+  .cloth-card {
+    width: 155px;
+    background: white;
+    border: 4px solid var(--yellow);
+    border-radius: 22px;
+    padding: 10px;
+    cursor: grab;
+    box-shadow: 0 7px 0 #E5A900;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    touch-action: none;
+  }
+
+  .cloth-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .cloth-card.selected {
+    border-color: var(--orange-dark);
+    background: #FFF7ED;
+    transform: scale(1.07);
+    box-shadow: 0 0 0 5px rgba(255, 140, 66, 0.35);
+  }
+
+  .cloth-card.placed {
+    width: 125px;
+    cursor: default;
+    border-color: var(--success);
+    box-shadow: 0 5px 0 #059669;
+    animation: popIn 0.35s ease;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.7); }
+    80% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+
+  .cloth-img-wrap {
+    width: 110px;
+    height: 95px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .cloth-card.placed .cloth-img-wrap {
+    width: 85px;
+    height: 75px;
+  }
+
+  .cloth-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .fallback-emoji {
+    font-size: 3.5rem;
+    pointer-events: none;
+  }
+
+  .cloth-name {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    pointer-events: none;
+  }
+
+  .cloth-card.placed .cloth-name {
+    font-size: 1.05rem;
+  }
+
+  /* رسالة التشجيع */
+  .feedback-msg {
+    min-height: 48px;
+    margin-top: 15px;
+    font-size: 1.6rem;
+    font-weight: 900;
+  }
+
+  .feedback-success { color: #059669; }
+  .feedback-try { color: var(--orange-dark); }
+
+  /* شاشة النهاية */
+  .trophy { font-size: 5.5rem; margin-bottom: 10px; }
+  .final-score {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--orange-dark);
+    background: var(--yellow-light);
+    border: 4px solid var(--yellow);
+    display: inline-block;
+    padding: 12px 35px;
+    border-radius: 25px;
+    margin: 15px 0 25px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <div class="badge-title">☀️❄️ ملابس الصيف والشتاء</div>
+    <div class="stars-box">⭐ النجوم: <span id="scoreDisplay">0</span></div>
+  </div>
+
+  <!-- 1. شاشة البداية -->
+  <div class="screen active" id="startScreen">
+    <div class="hero-icons">☀️👕 ❄️🧥</div>
+    <h1 class="main-title">ملابس الصيف والشتاء</h1>
+    <p class="sub-title">اسحب كل قطعة ملابس وضعها في الفصل المناسب لها</p>
+    <div class="designer-tag">إعداد: <span>م/ ندا رمضان</span></div>
+    <br>
+    <button class="btn-start" onclick="startGame()">ابدأ اللعب ▶</button>
+  </div>
+
+  <!-- 2. شاشة اللعبة -->
+  <div class="screen" id="gameScreen">
+    <div class="instruction-bar">
+      <div class="instruction-text">اسحب الملابس إلى فصل الصيف أو فصل الشتاء</div>
+      <button class="btn-sound" onclick="speakInstruction()">🔊 اسمع التعليمات</button>
+    </div>
+
+    <!-- مناطق الإفلات (الصيف والشتاء) -->
+    <div class="seasons-grid">
+      <!-- فصل الصيف -->
+      <div class="drop-zone summer-zone" id="summerZone"
+           ondragover="allowDrop(event)"
+           ondragleave="leaveDrop(event)"
+           ondrop="handleDrop(event, 'summer')"
+           onclick="handleZoneClick('summer')">
+        <div class="season-header">☀️ فصل الصيف</div>
+        <div class="dropped-items" id="summerItems"></div>
+      </div>
+
+      <!-- فصل الشتاء -->
+      <div class="drop-zone winter-zone" id="winterZone"
+           ondragover="allowDrop(event)"
+           ondragleave="leaveDrop(event)"
+           ondrop="handleDrop(event, 'winter')"
+           onclick="handleZoneClick('winter')">
+        <div class="season-header">❄️ فصل الشتاء</div>
+        <div class="dropped-items" id="winterItems"></div>
+      </div>
+    </div>
+
+    <!-- بطاقات الملابس -->
+    <div class="clothes-pool" id="clothesPool"></div>
+
+    <!-- رسالة التغذية الراجعة -->
+    <div class="feedback-msg" id="feedbackMsg"></div>
+  </div>
+
+  <!-- 3. شاشة النهاية -->
+  <div class="screen" id="endScreen">
+    <div class="trophy">🏆🎉</div>
+    <h1 class="main-title">أحسنت يا بطل!</h1>
+    <p class="sub-title">لقد رتبت ملابس الصيف والشتاء بنجاح</p>
+    <div class="final-score">مجموع النجوم: <span id="finalScore">6</span> ⭐</div>
+    <br>
+    <button class="btn-start" onclick="startGame()">العب مرة أخرى 🔄</button>
+  </div>
+</div>
+
+<script>
+  /* =====================================================================
+     📌 ضعي صورك بجانب ملف الكود واكتبي اسم كل صورة أمام image
+     مثال: image: "jacket.png" أو image: "tshirt.jpg"
+  ===================================================================== */
+  const clothesData = [
+    {
+      id: "item1",
+      name: "جاكت",
+      season: "winter",
+      image: "jacket.png", // <-- ضعي صورة الجاكت بجانب الملف بهذا الاسم أو غيري الاسم هنا
+      fallbackEmoji: "🧥"
+    },
+    {
+      id: "item2",
+      name: "تيشيرت",
+      season: "summer",
+      image: "tshirt.png", // <-- ضعي صورة التيشيرت بجانب الملف
+      fallbackEmoji: "👕"
+    },
+    {
+      id: "item3",
+      name: "قبعة صوف",
+      season: "winter",
+      image: "hat.png", // <-- ضعي صورة قبعة الصوف بجانب الملف
+      fallbackEmoji: "🧶"
+    },
+    {
+      id: "item4",
+      name: "فستان",
+      season: "summer",
+      image: "dress.png", // <-- ضعي صورة الفستان بجانب الملف
+      fallbackEmoji: "👗"
+    },
+    {
+      id: "item5",
+      name: "حذاء بوت",
+      season: "winter",
+      image: "boots.png", // <-- ضعي صورة حذاء البوت بجانب الملف
+      fallbackEmoji: "👢"
+    },
+    {
+      id: "item6",
+      name: "قميص",
+      season: "summer",
+      image: "shirt.png", // <-- ضعي صورة القميص بجانب الملف
+      fallbackEmoji: "👔"
+    }
+  ];
+
+  let score = 0;
+  let draggedItemId = null;
+  let selectedItemId = null; // لدعم النقر السهل كبديل للسحب
+
+  // مؤثرات صوتية مدمجة
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playSuccessSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + i * 0.1);
+      osc.stop(audioCtx.currentTime + i * 0.1 + 0.35);
+    });
+  }
+
+  function playGentleTrySound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(240, audioCtx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.25);
+  }
+
+  function speakArabic(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ar-SA';
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function speakInstruction() {
+    speakArabic("اسحب كل قطعة ملابس وضعها في فصل الصيف أو فصل الشتاء");
+  }
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function startGame() {
+    score = 0;
+    draggedItemId = null;
+    selectedItemId = null;
+    document.getElementById('scoreDisplay').textContent = score;
+    document.getElementById('feedbackMsg').innerHTML = '';
+    document.getElementById('summerItems').innerHTML = '';
+    document.getElementById('winterItems').innerHTML = '';
+
+    const pool = document.getElementById('clothesPool');
+    pool.innerHTML = '';
+
+    // خلط ترتيب البطاقات عشوائياً في كل مرة
+    const shuffled = [...clothesData].sort(() => Math.random() - 0.5);
+
+    shuffled.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'cloth-card';
+      card.id = item.id;
+      card.draggable = true;
+
+      card.innerHTML = `
+        <div class="cloth-img-wrap">
+          <img src="${item.image}" alt="${item.name}"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span class="fallback-emoji" style="display:none;">${item.fallbackEmoji}</span>
+        </div>
+        <div class="cloth-name">${item.name}</div>
+      `;
+
+      // أحداث السحب بالماوس
+      card.addEventListener('dragstart', (e) => {
+        if (card.classList.contains('placed')) return;
+        draggedItemId = item.id;
+        speakArabic(item.name);
+      });
+
+      // النقر على البطاقة (ينطق اسمها ويحددها كبديل سهل للسحب)
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.classList.contains('placed')) return;
+        speakArabic(item.name);
+        document.querySelectorAll('.cloth-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedItemId = item.id;
+      });
+
+      // دعم السحب باللمس للشاشات التفاعلية والتابلت
+      enableTouchDrag(card, item);
+
+      pool.appendChild(card);
+    });
+
+    showScreen('gameScreen');
+    setTimeout(() => speakInstruction(), 300);
+  }
+
+  // دعم السحب باللمس (Touch)
+  function enableTouchDrag(card, item) {
+    let clone = null;
+
+    card.addEventListener('touchstart', (e) => {
+      if (card.classList.contains('placed')) return;
+      draggedItemId = item.id;
+      speakArabic(item.name);
+
+      const touch = e.touches[0];
+      clone = card.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.zIndex = '9999';
+      clone.style.opacity = '0.9';
+      clone.style.pointerEvents = 'none';
+      clone.style.left = (touch.clientX - 75) + 'px';
+      clone.style.top = (touch.clientY - 75) + 'px';
+      document.body.appendChild(clone);
+    }, { passive: true });
+
+    card.addEventListener('touchmove', (e) => {
+      if (!clone) return;
+      const touch = e.touches[0];
+      clone.style.left = (touch.clientX - 75) + 'px';
+      clone.style.top = (touch.clientY - 75) + 'px';
+    }, { passive: true });
+
+    card.addEventListener('touchend', (e) => {
+      if (!clone) return;
+      const touch = e.changedTouches[0];
+      clone.remove();
+      clone = null;
+
+      const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (targetEl) {
+        const summerBox = targetEl.closest('#summerZone');
+        const winterBox = targetEl.closest('#winterZone');
+        if (summerBox) verifyPlacement(item.id, 'summer');
+        else if (winterBox) verifyPlacement(item.id, 'winter');
+      }
+    });
+  }
+
+  function allowDrop(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function leaveDrop(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function handleDrop(e, targetSeason) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (draggedItemId) {
+      verifyPlacement(draggedItemId, targetSeason);
+      draggedItemId = null;
+    }
+  }
+
+  // عند النقر على الصندوق بعد تحديد البطاقة
+  function handleZoneClick(targetSeason) {
+    if (selectedItemId) {
+      verifyPlacement(selectedItemId, targetSeason);
+    }
+  }
+
+  function verifyPlacement(itemId, targetSeason) {
+    const item = clothesData.find(x => x.id === itemId);
+    const card = document.getElementById(itemId);
+    const feedback = document.getElementById('feedbackMsg');
+
+    if (!item || !card || card.classList.contains('placed')) return;
+
+    card.classList.remove('selected');
+    selectedItemId = null;
+
+    if (item.season === targetSeason) {
+      // إجابة صحيحة
+      card.classList.add('placed');
+      card.draggable = false;
+
+      const containerId = targetSeason === 'summer' ? 'summerItems' : 'winterItems';
+      document.getElementById(containerId).appendChild(card);
+
+      score++;
+      document.getElementById('scoreDisplay').textContent = score;
+
+      const seasonName = targetSeason === 'summer' ? 'فصل الصيف' : 'فصل الشتاء';
+      feedback.innerHTML = `<span class="feedback-success">🌟 أحسنت! ${item.name} من ملابس ${seasonName} 🌟</span>`;
+
+      playSuccessSound();
+      speakArabic(`أحسنت! ${item.name} من ملابس ${seasonName}`);
+
+      // التحقق من انتهاء كل البطاقات
+      if (score === clothesData.length) {
+        setTimeout(() => {
+          document.getElementById('finalScore').textContent = score;
+          showScreen('endScreen');
+          playSuccessSound();
+          speakArabic("أحسنت يا بطل! لقد رتبت ملابس الصيف والشتاء بنجاح");
+        }, 1800);
+      }
+    } else {
+      // محاولة أخرى هادئة
+      const wrongSeasonName = targetSeason === 'summer' ? 'فصل الصيف' : 'فصل الشتاء';
+      feedback.innerHTML = `<span class="feedback-try">💛 فكر مرة أخرى.. هل نلبس ${item.name} في ${wrongSeasonName}؟ 💛</span>`;
+      playGentleTrySound();
+      speakArabic(`حاول مرة أخرى، أين نلبس ${item.name}؟`);
+    }
+  }
+</script>
+
+</body>
+</html>
